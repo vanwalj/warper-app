@@ -7,15 +7,15 @@ module.exports = {
         port: process.env.PORT
     },
     db: {
-        uri: process.env.DB_URI
+        uri: process.env.DB_URI || process.env.CLEARDB_DATABASE_URL
     },
     facebook: {
-        appId: "728886097224292",
-        appSecret: "b663fb56899f27c40b56e5cab1c8a713"
+        appId: process.env.FB_APP_ID,
+        appSecret: process.env.FB_APP_SECRET
     },
     aws: {
-        accessKey: 'AKIAIU4B5MUGDIPVGGTA',
-        secretKey: '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',
-        s3Bucket: "warper"
+        accessKey: process.env.AWS_AKEY,
+        secretKey: process.env.AWS_SKEY,
+        s3Bucket: process.env.AWS_S3_BUCKET
     }
 };

@@ -28,7 +28,11 @@ module.exports = {
             })
                 .then(function (userToken) {
                     userToken.setUser(req.user)
-                        .then(res.shortResponses.success);
+                        .then(function () {
+                            if (req.user.created)
+                                return res.shortResponses.created();
+                            res.shortResponses.success();
+                        });
                 }).catch(next);
         }
     ],

@@ -33,6 +33,7 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
             }).then(function (user) {
                 return facebookAuth.setUser(user)
                     .then(function () {
+                        user.created = true;
                         return user;
                     });
             });
