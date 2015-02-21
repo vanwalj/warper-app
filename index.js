@@ -3,9 +3,15 @@
  */
 
 var express = require('express'),
-    app = express();
+    winston = require('winston'),
+    app     = express();
 
 require('./routes')(app);
+
+app.use(function (req, res, next) {
+    winston.log('silly', "Received", req.headers);
+    next();
+});
 
 app.use(require('./helpers/short-responses'));
 app.use(require('./helpers/error-handling'));

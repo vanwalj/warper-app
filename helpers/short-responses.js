@@ -7,6 +7,7 @@ module.exports = function (req, res, next) {
 
     res.shortResponses = {
         _response: function (code, content) {
+            winston.log('silly', "Send", code, content);
             res.status(code).send(content);
         },
         success: function (content) {
