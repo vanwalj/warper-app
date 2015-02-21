@@ -8,7 +8,7 @@ var fs          = require('fs'),
     winston     = require('winston'),
     parameters  = require('../parameters'),
     Sequelize   = require('sequelize'),
-    sequelize   = new Sequelize(parameters.db.sql.uri, { logging: winston.info }),
+    sequelize   = new Sequelize(parameters.db.uri, { logging: winston.info }),
     db          = {};
 
 fs

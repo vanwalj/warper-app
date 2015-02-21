@@ -10,10 +10,10 @@ module.exports = function (sequelize, DataTypes) {
             unique: true,
             required: true
         },
-        firstName: DataTypes.STRING,
-        lastName: DataTypes.STRING,
-        gender: DataTypes.STRING,
-        nickname: DataTypes.STRING
+        familyName: DataTypes.STRING,
+        givenName: DataTypes.STRING,
+        middleName: DataTypes.STRING,
+        displayName: DataTypes.STRING
     }, {
         classMethods: {
             associate: function (models) {

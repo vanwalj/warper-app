@@ -5,6 +5,9 @@
 var express = require('express'),
     app = express();
 
-app.use('./routes');
+require('./routes')(app);
+
+app.use(require('./helpers/short-responses'));
+app.use(require('./helpers/error-handling'));
 
 module.exports = app;

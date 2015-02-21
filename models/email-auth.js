@@ -3,6 +3,8 @@
  */
 "use strict";
 
+var bcrypt  = require('bcrypt');
+
 module.exports = function (sequelize, DataTypes) {
     var EmailAuth = sequelize.define("EmailAuth", {
         email: {
@@ -12,7 +14,10 @@ module.exports = function (sequelize, DataTypes) {
         },
         password: {
             type: DataTypes.STRING,
-            required: true
+            required: true,
+            set: function (v) {
+                this.setDataValue('password', bcrypt.hashSync(v, 10));
+            }
         }
     }, {
         classMethods: {
@@ -20,7 +25,14 @@ module.exports = function (sequelize, DataTypes) {
                 EmailAuth.belongsTo(models.User);
             }
         },
-        instanceMethods: {}
+        instanceMethods: {
+            validatePassword: function (password, cb) {
+                bcrypt.compare(password, this.password, function (err, res) {
+                    if (err) return cb(err);
+                    cb(null, res);
+                });
+            }
+        }
     });
 
     return EmailAuth;

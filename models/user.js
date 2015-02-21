@@ -16,7 +16,12 @@ module.exports = function (sequelize, DataTypes) {
         nickname: DataTypes.STRING
     }, {
         classMethods: {
-            associate: function (models) {}
+            associate: function (models) {
+                User.belongsToMany(User, {
+                    as: 'Friend',
+                    through: models.Friends
+                });
+            }
         },
         instanceMethods: {}
     });
