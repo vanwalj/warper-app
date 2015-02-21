@@ -4,7 +4,8 @@
   "description": "Warper node server",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node bin/www"
   },
   "author": "",
   "license": "ISC",
