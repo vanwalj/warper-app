@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+/**
+ * Created by Jordan on 2/20/2015.
+ */
+
+var parameters  = require('../parameters'),
+    models      = require('../models'),
+    app         = require('../index');
+
+models.sequelize.sync().then(function () {
+    app.listen(parameters.server.port);
+});

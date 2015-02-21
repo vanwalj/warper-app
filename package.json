@@ -1,0 +1,25 @@
+{
+  "name": "warper-app",
+  "version": "1.0.0",
+  "description": "Warper node server",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.12.0",
+    "express": "^4.11.2",
+    "mariasql": "^0.1.21",
+    "passport": "^0.2.1",
+    "passport-facebook-token": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
+    "sequelize": "^2.0.3",
+    "winston": "^0.9.0"
+  },
+  "devDependencies": {
+    "hippie": "^0.3.0",
+    "mocha": "^2.1.0"
+  }
+}
