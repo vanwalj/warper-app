@@ -29,7 +29,9 @@ module.exports = {
     },
 
     facebookTokenAuth: function (req, res, next) {
+        winston.error('1');
         passport.authenticate('facebook-token-strategy', function (err, user) {
+            winston.error('2');
             if (err) return next(err);
             if (!user) {
                 winston.error("YOLO MAGLE");
