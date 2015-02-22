@@ -14,8 +14,7 @@ module.exports = function (sequelize, DataTypes) {
         lastName: DataTypes.STRING,
         gender: DataTypes.STRING,
         nickname: {
-            type: DataTypes.STRING,
-            required: true
+            type: DataTypes.STRING
         }
     }, {
         classMethods: {
