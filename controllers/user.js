@@ -30,8 +30,8 @@ module.exports = {
                     userToken.setUser(req.user)
                         .then(function () {
                             if (req.user.created)
-                                return res.shortResponses.created();
-                            res.shortResponses.success();
+                                return res.shortResponses.created({access_token: userToken.value});
+                            res.shortResponses.success({access_token: userToken.value});
                         });
                 }).catch(next);
         }

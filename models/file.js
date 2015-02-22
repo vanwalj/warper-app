@@ -6,6 +6,8 @@
 module.exports = function (sequelize, DataTypes) {
     var File = sequelize.define('File', {
 
+    }, {
+
     });
 
     return File;

@@ -48,8 +48,7 @@ module.exports = {
             if (!req.body.fileName || !req.body.path || !req.body.contentType || !req.body.contentLength) return res.shortResponses.badRequest();
             //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
             new models.File.create({
-                fileName: req.body.fileName,
-                type: req.body.contentType,
+                contentType: req.body.contentType,
                 contentLength: req.body.contentLength
             }).then(function (file) {
                     s3.getSignedUrl('putObject', {
