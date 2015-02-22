@@ -48,7 +48,7 @@ module.exports = {
         function (req, res, next) {
             if (!req.body.contentType || !req.body.contentLength || !req.body.friends) return res.shortResponses.badRequest();
             //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
-            new models.File.create({
+            models.File.create({
                 contentType: req.body.contentType,
                 contentLength: req.body.contentLength
             }).then(function (file) {
@@ -60,11 +60,17 @@ module.exports = {
                         Expires: 60
                     }, function (err, url) {
                         if (err) throw err;
-                        res.shortResponses.created({ url: url });
+                        return res.shortResponses.created({ url: url });
                     });
                 }).catch(next);
 
 
+        }
+    ],
+    snsNotification: [
+        function (req, res) {
+            console.log(req);
+            res.shortResponses.success();
         }
     ]
 };
