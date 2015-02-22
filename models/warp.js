@@ -7,14 +7,18 @@ module.exports = function (sequelize, DataTypes) {
     var Warp = sequelize.define('Warp', {
         latitude: DataTypes.FLOAT,
         longitude: DataTypes.FLOAT,
-        distance: DataTypes.BIGINT.UNSIGNED
+        distance: DataTypes.BIGINT.UNSIGNED,
+        transmit: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }
     }, {
         classMethods: {
             associate: function (models) {
                 Warp.belongsTo(Warp, { as: "Previous" });
                 Warp.belongsTo(Warp, { as: "Next" });
                 Warp.belongsTo(models.User, { as: "Sender" });
-                Warp.belongsTo(models.User, { as: "Dest" });
+                Warp.belongsTo(models.User, { as: "Receiver" });
                 Warp.belongsTo(models.File);
             }
         },

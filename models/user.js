@@ -13,7 +13,7 @@ module.exports = function (sequelize, DataTypes) {
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
         gender: DataTypes.STRING,
-        nickname: DataTypes.STRING
+        username: DataTypes.STRING
     }, {
         classMethods: {
             associate: function (models) {
@@ -21,6 +21,13 @@ module.exports = function (sequelize, DataTypes) {
                     as: 'Friend',
                     through: models.Friends
                 });
+                User.hasMany(models.Device);
+                User.hasMany(models.Warp, { as: "Sender" });
+                User.hasMany(models.Warp, { as: "Receiver" });
+                User.hasMany(models.UserToken);
+                User.hasMany(models.File);
+                User.hasOne(models.FacebookAuth);
+                User.hasOne(models.EmailAuth);
             }
         },
         instanceMethods: {},

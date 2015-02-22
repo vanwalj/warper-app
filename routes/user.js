@@ -3,7 +3,6 @@
  */
 
 var express             = require('express'),
-    passport            = require('passport'),
     models              = require('../models'),
     securityController  = require('../controllers/security'),
     userController      = require('../controllers/user');
@@ -21,6 +20,15 @@ module.exports = function(app) {
             });
     });
 
+    router.params('userId', function (req, res, next, userName) {
+        models.User.findOne({ username: userName })
+            .then(function (user) {
+                if (!user) res.shortResponses.notFound();
+                req.qUser = user;
+                next()
+            }).catch(next);
+    });
+
     // Routes
     router.route('/register')
         .post(userController.register);
@@ -36,8 +44,8 @@ module.exports = function(app) {
         .delete(securityController.bearerAuth, userController.deleteMe)
         .post(securityController.bearerAuth, userController.postMe);
 
-    router.route('/:userId')
-        .get(securityController.bearerAuth, userController.getUser);
+    router.route('/:userName')
+        .get(securityController.bearerAuth, userController.getUserByUsername);
 
     router.route('/friend')
         .get(securityController.bearerAuth)

@@ -42,9 +42,14 @@ module.exports = {
             res.shortResponses.success(req.user.values);
         }
     ],
-    getUser: [
+    getUserByUsername: [
         function (req, res) {
-            res.shortResponses.success(req.qUser.values);
+            var user = {
+                id: req.qUser.id,
+                username: req.qUser.username
+            };
+
+            res.shortResponses.success(user);
         }
     ],
     postMe: [

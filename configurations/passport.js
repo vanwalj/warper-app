@@ -7,7 +7,6 @@ var passport                = require('passport'),
     BearerTokenStrategy     = require('passport-http-bearer').Strategy,
     HttpStrategy            = require('passport-http').BasicStrategy,
     models                  = require('../models'),
-    winston                 = require('winston'),
     parameters              = require('../parameters');
 
 passport.use("facebook-token-strategy", new FacebookTokenStrategy({
@@ -29,7 +28,7 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
             return models.User.create({
                 email: facebookAuth.email,
                 lastName: facebookAuth.familyName,
-                nickname: facebookAuth.displayName,
+                username: facebookAuth.displayName,
                 firstName: facebookAuth.givenName
             }).then(function (user) {
                 return facebookAuth.setUser(user)

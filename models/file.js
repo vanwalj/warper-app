@@ -16,6 +16,7 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
                 File.belongsTo(models.User, { as: 'Owner' });
+                File.hasMany(models.Warp);
             }
         },
         paranoid: true

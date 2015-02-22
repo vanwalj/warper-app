@@ -3,6 +3,7 @@
  */
 
 var bodyParser  = require('body-parser'),
+    winston     = require('winston'),
     parameters  = require('../parameters'),
     models      = require('../models');
 
@@ -70,8 +71,23 @@ module.exports = {
     snsNotification: [
         bodyParser.text(),
         function (req, res) {
-            console.log(req.body);
-            res.shortResponses.success();
+            var objectKey;
+            try {
+                objectKey = JSON.parse(req.body.Message).Records[0].s3.object.key;
+                winston.log('info', 'Receive a notification from SNS for object.', objectKey);
+                models.File.find(objectKey)
+                    .then(function (file) {
+                        if (!file) return res.shortResponses.notFound();
+                        file.save();
+                        return res.shortResponses.ok();
+                    }).catch(function () {
+                        winston.error(e);
+                        return res.shortResponses.badRequest();
+                    });
+            } catch (err) {
+                winston.error(e);
+                return res.shortResponses.badRequest();
+            }
         }
     ]
 };

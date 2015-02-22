@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apns": "^0.1.0",
     "aws-sdk": "^2.1.13",
     "bcrypt": "^0.8.1",
     "bluebird": "^2.9.12",
