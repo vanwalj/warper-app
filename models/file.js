@@ -5,9 +5,14 @@
 
 module.exports = function (sequelize, DataTypes) {
     var File = sequelize.define('File', {
-
+        contentType: DataTypes.STRING,
+        contentLength: DataTypes.STRING
     }, {
-
+        classMethods: {
+            associate: function (models) {
+                File.belongsTo(models.User, { as: 'Owner' });
+            }
+        }
     });
 
     return File;

@@ -6,14 +6,16 @@ var express = require('express'),
     winston = require('winston'),
     app     = express();
 
+require('./configurations/passport');
+require('./configurations/winston');
+app.use(require('./helpers/short-responses'));
+app.use(require('./helpers/error-handling'));
+
 require('./routes')(app);
 
 app.use(function (req, res, next) {
     winston.log('silly', "Received", req.headers);
     next();
 });
-
-app.use(require('./helpers/short-responses'));
-app.use(require('./helpers/error-handling'));
 
 module.exports = app;
