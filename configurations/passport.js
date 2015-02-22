@@ -7,14 +7,13 @@ var passport                = require('passport'),
     BearerTokenStrategy     = require('passport-http-bearer').Strategy,
     HttpStrategy            = require('passport-http').BasicStrategy,
     models                  = require('../models'),
+    winston                 = require('winston'),
     parameters              = require('../parameters');
 
 passport.use("facebook-token-strategy", new FacebookTokenStrategy({
     clientID: parameters.facebook.appId,
     clientSecret: parameters.facebook.appSecret
 }, function (accessToken, refreshToken, profile, done) {
-    winston.error('0');
-    winston.error(accessToken);
     models.FacebookAuth.findOne({
         facebookId: profile.id
     }).then(function (facebookAuth) {

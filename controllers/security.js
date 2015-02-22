@@ -32,20 +32,16 @@ module.exports = {
     facebookTokenAuth: [
         bodyParser.json(),
         function (req, res, next) {
-            winston.error(req.body);
-        winston.error('1');
 
-        passport.authenticate('facebook-token-strategy', function (err, user) {
-            winston.error('2');
-            if (err) return next(err);
-            if (!user) {
-                winston.error("YOLO MAGLE");
-                return res.shortResponses.unauthorized();
-            }
-            req.login(user, { session: false }, function (err) {
+            passport.authenticate('facebook-token-strategy', function (err, user) {
                 if (err) return next(err);
-                next();
-            });
-        })(req, res, next);
-    }]
+                if (!user) {
+                    return res.shortResponses.unauthorized();
+                }
+                req.login(user, { session: false }, function (err) {
+                    if (err) return next(err);
+                    next();
+                });
+            })(req, res, next);
+        }]
 };
