@@ -68,6 +68,7 @@ module.exports = {
         }
     ],
     snsNotification: [
+        bodyParser.text({ type: 'text/html' }),
         function (req, res) {
             console.log(req);
             res.shortResponses.success();
