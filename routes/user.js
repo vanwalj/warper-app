@@ -29,17 +29,17 @@ module.exports = function(app) {
         .get(securityController.httpAuth, userController.getToken);
 
     router.route('/token/facebook')
-        .get(securityController.facebookTokenAuth, userController.getToken);
+        .post(securityController.facebookTokenAuth, userController.getToken);
 
     router.route('/me')
         .get(securityController.bearerAuth, userController.getMe)
         .delete(securityController.bearerAuth, userController.deleteMe)
         .post(securityController.bearerAuth, userController.postMe);
 
-    router.route('/user/:userId')
+    router.route('/:userId')
         .get(securityController.bearerAuth, userController.getUser);
 
-    router.route('/user/friend')
+    router.route('/friend')
         .get(securityController.bearerAuth)
         .post(securityController.bearerAuth)
         .delete(securityController.bearerAuth);
