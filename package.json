@@ -22,7 +22,8 @@
     "passport-http": "^0.2.2",
     "passport-http-bearer": "^1.0.1",
     "sequelize": "^2.0.3",
-    "winston": "^0.9.0"
+    "winston": "^0.9.0",
+    "winston-slack-pls": "git://github.com/vanwalj/winston-slack-pls"
   },
   "devDependencies": {
     "hippie": "^0.3.0",
