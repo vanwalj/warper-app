@@ -3,6 +3,7 @@
  */
 
 var passport    = require('passport'),
+    bodyParser  = require('express'),
     winston     = require('winston');
 
 module.exports = {
@@ -28,8 +29,11 @@ module.exports = {
         })(req, res, next);
     },
 
-    facebookTokenAuth: function (req, res, next) {
+    facebookTokenAuth: [
+        bodyParser.json(),
+        function (req, res, next) {
         winston.error('1');
+
         passport.authenticate('facebook-token-strategy', function (err, user) {
             winston.error('2');
             if (err) return next(err);
@@ -42,5 +46,5 @@ module.exports = {
                 next();
             });
         })(req, res, next);
-    }
+    }]
 };
