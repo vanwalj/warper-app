@@ -32,7 +32,7 @@ module.exports = {
         passport.authenticate('facebook-token-strategy', function (err, user) {
             if (err) return next(err);
             if (!user) {
-                winston.log("YOLO MAGLE");
+                winston.error("YOLO MAGLE");
                 return res.shortResponses.unauthorized();
             }
             req.login(user, { session: false }, function (err) {
