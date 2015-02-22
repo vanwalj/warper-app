@@ -3,7 +3,7 @@
  */
 
 var passport    = require('passport'),
-    bodyParser  = require('express'),
+    bodyParser  = require('body-parser'),
     winston     = require('winston');
 
 module.exports = {
