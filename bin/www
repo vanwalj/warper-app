@@ -6,8 +6,12 @@
 
 var parameters  = require('../parameters'),
     models      = require('../models'),
+    winston     = require('winston'),
     app         = require('../index');
 
 models.sequelize.sync().then(function () {
-    app.listen(parameters.server.port);
+    app.listen(parameters.server.port, function () {
+        console.log(parameters.server.port);
+        winston.log('Server listening on', parameters.server.port);
+    });
 });

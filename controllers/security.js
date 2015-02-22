@@ -2,7 +2,8 @@
  * Created by Jordan on 2/21/2015.
  */
 
-var passport    = require('passport');
+var passport    = require('passport'),
+    winston     = require('winston');
 
 module.exports = {
     bearerAuth: function (req, res, next) {
@@ -31,6 +32,7 @@ module.exports = {
         passport.authenticate('facebook-token-strategy', function (err, user) {
             if (err) return next(err);
             if (!user) {
+                winston.log("YOLO MAGLE");
                 return res.shortResponses.unauthorized();
             }
             req.login(user, { session: false }, function (err) {
