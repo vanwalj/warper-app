@@ -10,13 +10,19 @@ module.exports = function (sequelize, DataTypes) {
         email: {
             type: DataTypes.STRING,
             unique: true,
-            required: true
+            required: true,
+            validate: {
+                isEmail: true
+            }
         },
         password: {
             type: DataTypes.STRING,
             required: true,
             set: function (v) {
                 this.setDataValue('password', bcrypt.hashSync(v, 10));
+            },
+            validate: {
+                len: [6, 256]
             }
         }
     }, {
@@ -32,7 +38,8 @@ module.exports = function (sequelize, DataTypes) {
                     cb(null, res);
                 });
             }
-        }
+        },
+        paranoid: true
     });
 
     return EmailAuth;

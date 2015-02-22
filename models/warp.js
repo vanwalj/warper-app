@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
     var Warp = sequelize.define('Warp', {
         latitude: DataTypes.FLOAT,
         longitude: DataTypes.FLOAT,
-        distance: DataTypes.FLOAT.UNSIGNED
+        distance: DataTypes.BIGINT.UNSIGNED
     }, {
         classMethods: {
             associate: function (models) {
@@ -17,7 +17,8 @@ module.exports = function (sequelize, DataTypes) {
                 Warp.belongsTo(models.User, { as: "Dest" });
                 Warp.belongsTo(models.File);
             }
-        }
+        },
+        paranoid: true
     });
 
     return Warp;

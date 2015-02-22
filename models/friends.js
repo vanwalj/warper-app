@@ -5,7 +5,20 @@
 
 module.exports = function (sequelize, DataTypes) {
     var Friends = sequelize.define("Friends", {
-        status: DataTypes.STRING
+        status: {
+            type: DataTypes.ENUM,
+            values: ['active', 'pending']
+        },
+        from: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            unique: 'userIndex'
+        },
+        to: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            unique: 'userIndex'
+        }
+    }, {
+        paranoid: true
     });
 
     return Friends;

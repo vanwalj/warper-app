@@ -5,6 +5,11 @@
 
 module.exports = function (sequelize, DataTypes) {
     var FacebookAuth = sequelize.define("FacebookAuth", {
+        facebookId: {
+            primaryKey: true,
+            type: DataTypes.STRING,
+            autoIncrement: false
+        },
         email: {
             type: DataTypes.STRING,
             unique: true,
@@ -20,7 +25,8 @@ module.exports = function (sequelize, DataTypes) {
                 FacebookAuth.belongsTo(models.User);
             }
         },
-        instanceMethods: {}
+        instanceMethods: {},
+        paranoid: true
     });
 
     return FacebookAuth;

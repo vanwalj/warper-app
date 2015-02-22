@@ -13,9 +13,7 @@ module.exports = function (sequelize, DataTypes) {
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
         gender: DataTypes.STRING,
-        nickname: {
-            type: DataTypes.STRING
-        }
+        nickname: DataTypes.STRING
     }, {
         classMethods: {
             associate: function (models) {
@@ -25,7 +23,8 @@ module.exports = function (sequelize, DataTypes) {
                 });
             }
         },
-        instanceMethods: {}
+        instanceMethods: {},
+        paranoid: true
     });
 
     return User;

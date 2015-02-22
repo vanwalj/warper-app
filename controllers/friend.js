@@ -16,7 +16,7 @@ module.exports = {
                     req.user.hasFriend(user)
                         .then(function (result) {
                             if (result) return res.shortResponses.badRequest();
-                            req.user.addFriend(user)
+                            req.user.addFriend(user, { status: "pending" })
                                 .then(res.shortResponses.success());
                         })
                 }).catch(next);

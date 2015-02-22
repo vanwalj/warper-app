@@ -12,7 +12,8 @@ module.exports = function (sequelize, DataTypes) {
                 UserToken.belongsTo(models.User);
             }
         },
-        instanceMethods: {}
+        instanceMethods: {},
+        paranoid: true
     });
 
     return UserToken;

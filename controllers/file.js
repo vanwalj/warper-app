@@ -3,6 +3,7 @@
  */
 
 var bodyParser  = require('body-parser'),
+    parameters  = require('../parameters'),
     models      = require('../models');
 
 module.exports = {
@@ -45,7 +46,7 @@ module.exports = {
     getAwsUrl: [
         bodyParser.json(),
         function (req, res, next) {
-            if (!req.body.fileName || !req.body.path || !req.body.contentType || !req.body.contentLength) return res.shortResponses.badRequest();
+            if (!req.body.contentType || !req.body.contentLength || !req.body.friends) return res.shortResponses.badRequest();
             //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
             new models.File.create({
                 contentType: req.body.contentType,
@@ -59,7 +60,7 @@ module.exports = {
                         Expires: 60
                     }, function (err, url) {
                         if (err) throw err;
-                        res.shortResponses.created({ url: url, id: file.id });
+                        res.shortResponses.created({ url: url });
                     });
                 }).catch(next);
 

@@ -17,8 +17,9 @@ module.exports = {
             models.User.create({
                 email: req.body.email,
                 password: req.body.password
-            }).then(res.shortResponses.created)
-                .catch(next)
+            }).then(function () {
+                res.shortResponses.created();
+            }).catch(next)
         }
     ],
     getToken: [
@@ -38,26 +39,27 @@ module.exports = {
     ],
     getMe: [
         function (req, res) {
-            res.shortResponses.success(req.user);
+            res.shortResponses.success(req.user.values);
         }
     ],
     getUser: [
         function (req, res) {
-            res.shortResponses.success(req.qUser);
+            res.shortResponses.success(req.qUser.values);
         }
     ],
     postMe: [
         bodyParser.json(),
         function (req, res, next) {
-            req.user.updateAttributes(req.body, {fields: [
+            req.user.update(req.body, {fields: [
                 'email', 'type', 'firstName', 'lastName', 'gender', 'nickname'
-            ]}).then(res.shortResponses.success)
-                .catch(next);
+            ]}).then(function () {
+                res.shortResponses.success();
+            }).catch(next);
         }
     ],
     deleteMe: [
         function (req, res, next) {
-            req.user.delete()
+            req.user.destroy()
                 .then(res.shortResponses.success)
                 .catch(next);
         }

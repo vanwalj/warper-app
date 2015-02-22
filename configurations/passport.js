@@ -11,25 +11,26 @@ var passport                = require('passport'),
     parameters              = require('../parameters');
 
 passport.use("facebook-token-strategy", new FacebookTokenStrategy({
-    clientID: parameters.facebook.appId,
-    clientSecret: parameters.facebook.appSecret
-}, function (accessToken, refreshToken, profile, done) {
-    models.FacebookAuth.findOne({
-        facebookId: profile.id
-    }).then(function (facebookAuth) {
-        if (facebookAuth) return facebookAuth.getUser();
-        return models.FacebookAuth.create({
-            email: profile.emails[0].value,
-            familyName: profile.familyName,
-            givenName: profile.givenName,
-            middleName: profile.middleName,
-            displayName: profile.displayName
-        }).then(function (facebookAuth) {
+        clientID: parameters.facebook.appId,
+        clientSecret: parameters.facebook.appSecret
+    },
+    function (accessToken, refreshToken, profile, done) {
+        models.FacebookAuth.findOrCreate({
+            where: {facebookId: profile.id},
+            defaults: {
+                email: profile.emails[0].value,
+                givenName: profile.givenName,
+                familyName: profile.familyName,
+                middleName: profile.middleName,
+                displayName: profile.displayName
+            }
+        }).spread(function (facebookAuth, created) {
+            if (!created) return facebookAuth.getUser();
             return models.User.create({
                 email: facebookAuth.email,
-                firstName: facebookAuth.givenName,
                 lastName: facebookAuth.familyName,
-                nickname: facebookAuth.displayName
+                nickname: facebookAuth.displayName,
+                firstName: facebookAuth.givenName
             }).then(function (user) {
                 return facebookAuth.setUser(user)
                     .then(function () {
@@ -37,13 +38,12 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
                         return user;
                     });
             });
-        });
-    }).then(function (user) {
-        if (!user) throw new Error("Can't get a user account liked to this facebook account");
-        done(null, user);
-    }).catch(done);
-
-}));
+        }).then(function (user) {
+            if (!user) throw new Error("Can't get a user account liked to this facebook account");
+            done(null, user);
+        }).catch(done);
+    }
+));
 
 passport.use("bearer-token-strategy", new BearerTokenStrategy(
     function (token, done) {
