@@ -3,6 +3,8 @@
  */
 "use strict";
 
+var winston = require('winston');
+
 module.exports = function (req, res, next) {
 
     res.shortResponses = {
