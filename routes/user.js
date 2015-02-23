@@ -21,12 +21,8 @@ module.exports = function(app) {
     });
 
     router.param('userName', function (req, res, next, userName) {
-        models.User.findOne({ username: userName })
-            .then(function (user) {
-                if (!user) res.shortResponses.notFound();
-                req.qUser = user;
-                next()
-            }).catch(next);
+        req.username = userName;
+        next();
     });
 
     // Routes

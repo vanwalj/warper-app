@@ -71,11 +71,13 @@ module.exports = {
     ],
     isAValidUsername: [
         function (req, res, next) {
-            models.User.findOne({ username: req.qUser })
+            models.User.findOne({ username: req.username })
                 .then(function (user) {
                     if (user) return res.shortResponses.success({ result: false });
                     res.shortResponses.success({ result: true });
-                }).catch(next);
+                }).catch(function (err) {
+                    next(err);
+                });
 
         }
     ]
