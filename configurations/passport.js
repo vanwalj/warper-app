@@ -39,7 +39,7 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
                     });
             });
         }).then(function (user) {
-            if (!user) throw new Error("Can't get a user account liked to this facebook account");
+            if (!user) throw new Error("Can't get a user account linked to this facebook account");
             done(null, user);
         }).catch(done);
     }

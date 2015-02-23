@@ -71,7 +71,7 @@ module.exports = {
     ],
     isAValidUsername: [
         function (req, res, next) {
-            models.User.findOne({ username: req.username })
+            models.User.findOne({ where: { username: req.username } })
                 .then(function (user) {
                     if (user) return res.shortResponses.success({ result: false });
                     res.shortResponses.success({ result: true });
