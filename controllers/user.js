@@ -6,7 +6,6 @@
 var bodyParser  = require('body-parser'),
     models      = require('../models'),
     hat         = require('hat'),
-    winston     = require('winston'),
     rack        = hat.rack(256, 36);
 
 module.exports = {
@@ -74,10 +73,8 @@ module.exports = {
         function (req, res, next) {
             models.User.findOne({ username: req.qUser })
                 .then(function (user) {
-                    winston.log(user);
-                    winston.log(res);
-                    if (user) return res.shortResponses({ result: false });
-                    res.shortResponses({ result: true });
+                    if (user) return res.shortResponses.success({ result: false });
+                    res.shortResponses.success({ result: true });
                 }).catch(next);
         }
     ]
