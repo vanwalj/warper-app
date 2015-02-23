@@ -48,7 +48,7 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
 passport.use("bearer-token-strategy", new BearerTokenStrategy(
     function (token, done) {
         models.UserToken.findOne({
-            token: token
+            where: { token: token }
         }).then(function (userToken) {
             if (!userToken) return done(null, false);
             return userToken.getUser()
@@ -62,7 +62,7 @@ passport.use("bearer-token-strategy", new BearerTokenStrategy(
 passport.use("http-strategy", new HttpStrategy(
     function (email, password, done) {
         models.EmailAuth.findOne({
-            email: email
+            where: { email: email }
         }).then(function (emailAuth) {
             if (!emailAuth) return done(null, false);
             emailAuth.validatePassword(password, function (err, valid) {
