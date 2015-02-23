@@ -4,6 +4,7 @@
 
 var bodyParser  = require('body-parser'),
     winston     = require('winston'),
+    sharing     = require('../helpers/sharing'),
     parameters  = require('../parameters'),
     models      = require('../models');
 
@@ -61,7 +62,8 @@ module.exports = {
                         Expires: 60
                     }, function (err, url) {
                         if (err) throw err;
-                        return res.shortResponses.created({ url: url });
+                        res.shortResponses.created({ url: url });
+
                     });
                 }).catch(next);
 
@@ -78,8 +80,11 @@ module.exports = {
                 models.File.find(objectKey)
                     .then(function (file) {
                         if (!file) return res.shortResponses.notFound();
-                        file.save();
-                        return res.shortResponses.ok();
+                        file.snsValid = true;
+                        file.save().then(function (file) {
+                            res.shortResponses.ok();
+                            sharing.shareFile(file);
+                        });
                     }).catch(function () {
                         winston.error(e);
                         return res.shortResponses.badRequest();

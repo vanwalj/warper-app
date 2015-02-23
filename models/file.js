@@ -11,7 +11,11 @@ module.exports = function (sequelize, DataTypes) {
             autoIncrement: true
         },
         contentType: DataTypes.STRING,
-        contentLength: DataTypes.INTEGER.UNSIGNED
+        contentLength: DataTypes.INTEGER.UNSIGNED,
+        snsValid: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        }
     }, {
         classMethods: {
             associate: function (models) {

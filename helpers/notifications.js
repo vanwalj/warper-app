@@ -3,9 +3,9 @@
  */
 
 var apns = require("apns"),
+    _ = require('underscore'),
     options,
-    connection,
-    notification;
+    connection;
 
 options = {
     keyFile : __dirname + "/../conf/key.pem",
@@ -15,8 +15,13 @@ options = {
 
 connection = new apns.Connection(options);
 
-notification = new apns.Notification();
-notification.device = new apns.Device("iphone_token");
-notification.alert = "Hello World !";
+var iOS = function (token, notification) {
+    var _notification = new apns.Notification();
+    _notification = _.extend(_notification, notification);
+    _notification.device = new apns.Device(token);
+    connection.sendNotification(_notification);
+};
 
-connection.sendNotification(notification);
+module.exports = {
+    iOS: iOS
+};

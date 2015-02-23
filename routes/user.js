@@ -48,7 +48,7 @@ module.exports = function(app) {
         .get(securityController.bearerAuth, userController.getUserByUsername);
 
     router.route('/:userName/isvalid')
-        .get(securityController.bearerAuth, userController.isAValidUsername);
+        .get(userController.isAValidUsername);
 
     router.route('/friend')
         .get(securityController.bearerAuth)
