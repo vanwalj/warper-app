@@ -76,6 +76,7 @@ module.exports = {
                     if (user) return res.shortResponses.success({ result: false });
                     res.shortResponses.success({ result: true });
                 }).catch(next);
+
         }
     ]
 };
