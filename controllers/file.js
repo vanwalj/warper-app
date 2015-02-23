@@ -62,8 +62,7 @@ module.exports = {
                         Expires: 60
                     }, function (err, url) {
                         if (err) throw err;
-                        res.shortResponses.created({ url: url });
-
+                        return res.shortResponses.created({ url: url });
                     });
                 }).catch(next);
 

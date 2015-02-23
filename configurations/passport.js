@@ -48,7 +48,7 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
 passport.use("bearer-token-strategy", new BearerTokenStrategy(
     function (token, done) {
         models.UserToken.findOne({
-            where: { token: token }
+            where: { value: token }
         }).then(function (userToken) {
             if (!userToken) return done(null, false);
             return userToken.getUser()
