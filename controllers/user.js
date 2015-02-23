@@ -52,11 +52,11 @@ module.exports = {
             res.shortResponses.success(user);
         }
     ],
-    postMe: [
+    putMe: [
         bodyParser.json(),
         function (req, res, next) {
             req.user.update(req.body, {fields: [
-                'email', 'type', 'firstName', 'lastName', 'gender', 'nickname'
+                'email', 'type', 'firstName', 'lastName', 'gender', 'username'
             ]}).then(function () {
                 res.shortResponses.success();
             }).catch(next);
@@ -67,6 +67,15 @@ module.exports = {
             req.user.destroy()
                 .then(res.shortResponses.success)
                 .catch(next);
+        }
+    ],
+    isAValidUsername: [
+        function (req, res, next) {
+            models.User.findOne({ username: req.qUser })
+                .then(function (user) {
+                    if (user) return res.shortResponses({ result: false });
+                    res.shortResponses({ result: true });
+                }).catch(next);
         }
     ]
 };

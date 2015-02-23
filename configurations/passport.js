@@ -14,6 +14,7 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
         clientSecret: parameters.facebook.appSecret
     },
     function (accessToken, refreshToken, profile, done) {
+        console.log(profile);
         models.FacebookAuth.findOrCreate({
             where: {facebookId: profile.id},
             defaults: {

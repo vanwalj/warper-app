@@ -42,10 +42,13 @@ module.exports = function(app) {
     router.route('/me')
         .get(securityController.bearerAuth, userController.getMe)
         .delete(securityController.bearerAuth, userController.deleteMe)
-        .post(securityController.bearerAuth, userController.postMe);
+        .put(securityController.bearerAuth, userController.putMe);
 
     router.route('/:userName')
         .get(securityController.bearerAuth, userController.getUserByUsername);
+
+    router.route('/:userName/isvalid')
+        .get(securityController.bearerAuth, userController.isAValidUsername);
 
     router.route('/friend')
         .get(securityController.bearerAuth)
