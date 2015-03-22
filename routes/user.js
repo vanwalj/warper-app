@@ -10,39 +10,39 @@ var restify             = require('restify'),
 
 module.exports = function(server) {
 
-    server.get({ path: '/user' },
+    server.get({ path: '/user', name: 'Get account' },
         securityController.bearerAuth,
         userController.getMe
     );
 
-    server.post({ path: '/user' },
+    server.post({ path: '/user', name: 'Register' },
         utilsController.parseBody,
         userController.register
     );
 
-    server.put({ path: '/user' },
+    server.put({ path: '/user', name: 'Update account' },
         securityController.bearerAuth,
         utilsController.parseBody,
         userController.putMe
     );
 
-    server.del({ path: '/user' },
+    server.del({ path: '/user', name: 'Delete account' },
         securityController.bearerAuth,
         userController.deleteMe
     );
 
-    server.get({ path: '/user/token/email' },
+    server.post({ path: '/user/token/email', name: 'Request bearer token with email' },
         securityController.httpAuth,
         userController.getToken
     );
 
-    server.post({ path: '/user/token/facebook' },
+    server.post({ path: '/user/token/facebook', name: 'Request bearer token with facebook' },
         utilsController.parseBody,
         securityController.facebookTokenAuth,
         userController.getToken
     );
 
-    server.get({ path: '/user/:userName/is-valid' },
+    server.get({ path: '/user/:userName/is-valid', name: 'Test if username is valid' },
         userController.isAValidUsername
     );
 
