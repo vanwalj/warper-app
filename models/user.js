@@ -8,12 +8,15 @@ module.exports = function (sequelize, DataTypes) {
         email: {
             type: DataTypes.STRING,
             unique: true,
-            required: true
+            allowNull: false,
+            validate: {
+                isEmail: true
+            }
         },
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
         gender: DataTypes.STRING,
-        username: DataTypes.STRING
+        username: { type: DataTypes.STRING }
     }, {
         classMethods: {
             associate: function (models) {

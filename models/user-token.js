@@ -8,7 +8,7 @@ var hat = require('hat'),
 
 module.exports = function (sequelize, DataTypes) {
     var UserToken = sequelize.define("UserToken", {
-        value: DataTypes.STRING
+        value: { type: DataTypes.STRING, allowNull: false }
     }, {
         classMethods: {
             associate: function (models) {

@@ -22,14 +22,8 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
                 .then(function (facebookAuth) {
                     if (facebookAuth)
                         return facebookAuth.update({
-                            facebookId: profile.id,
                             accessToken: accessToken,
-                            refreshToken: refreshToken,
-                            email: profile.emails[0].value,
-                            givenName: profile.givenName,
-                            familyName: profile.familyName,
-                            middleName: profile.middleName,
-                            displayName: profile.displayName
+                            refreshToken: refreshToken
                         }, { transaction: t }).call('getUser');
                     return models.Sequelize.Promise.join(
                         models.User.create({
@@ -85,12 +79,12 @@ passport.use("http-strategy", new HttpStrategy(
             emailAuth.validatePassword(password, function (err, valid) {
                 if (err) return done(err);
                 if (!valid) return done(null, false);
-                return emailAuth.getUser();
+                return emailAuth.getUser().then(function (user) {
+                    if (!user) return done(null, false);
+                    return done(null, user);
+                }).catch(done);
             });
-        }).then(function (user) {
-            if (!user) return done(null, false);
-            return done(null, user);
-        }).catch(done);
+        })
     }
 ));
 

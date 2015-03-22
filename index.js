@@ -11,6 +11,10 @@ var restify     = require('restify'),
     });
 
 server.use(restify.CORS());
+server.use(restify.bodyParser({
+    mapParams: true,
+    overrideParams: false
+}));
 
 require('./configurations/passport')(server);
 require('./configurations/winston');

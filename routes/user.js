@@ -5,8 +5,7 @@
 var restify             = require('restify'),
     models              = require('../models'),
     userController      = require('../controllers/user'),
-    securityController  = require('../controllers/security'),
-    utilsController     = require('../controllers/utils');
+    securityController  = require('../controllers/security');
 
 module.exports = function(server) {
 
@@ -16,13 +15,11 @@ module.exports = function(server) {
     );
 
     server.post({ path: '/user', name: 'Register' },
-        utilsController.parseBody,
         userController.register
     );
 
     server.put({ path: '/user', name: 'Update account' },
         securityController.bearerAuth,
-        utilsController.parseBody,
         userController.putMe
     );
 
@@ -37,7 +34,6 @@ module.exports = function(server) {
     );
 
     server.post({ path: '/user/token/facebook', name: 'Request bearer token with facebook' },
-        utilsController.parseBody,
         securityController.facebookTokenAuth,
         userController.getToken
     );

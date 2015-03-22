@@ -10,14 +10,14 @@ module.exports = function (sequelize, DataTypes) {
         email: {
             type: DataTypes.STRING,
             unique: true,
-            required: true,
+            allowNull: false,
             validate: {
                 isEmail: true
             }
         },
         password: {
             type: DataTypes.STRING,
-            required: true,
+            allowNull: false,
             set: function (v) {
                 this.setDataValue('password', bcrypt.hashSync(v, 10));
             },

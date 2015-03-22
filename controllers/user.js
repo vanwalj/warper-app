@@ -12,20 +12,21 @@ module.exports = {
         models.sequelize.transaction(function (t) {
             return models.Sequelize.Promise.join(
                 models.User.create(req.params, { fields: ['email'], transaction: t }),
-                models.EmailAuth.create(req.params, { fields: ['password'], transaction: t }),
+                models.EmailAuth.create(req.params, { fields: ['email', 'password'], transaction: t }),
                 models.UserToken.create({}, { transaction: t }),
                 function (user, emailAuth, userToken) {
                     return models.Sequelize.Promise.join(
                         user.setEmailAuth(emailAuth, { transaction: t }),
-                        userToken.setUser(user, { transaction: t }),
+                        user.addUserToken(userToken, { transaction: t }),
                         function () { return userToken; }
                     );
                 }
             )
         })
-            .then(function (userToken) { return req.send(userToken.get()) })
-            .catch(models.Sequelize.ValidationError, function (e) { return next(restify.BadRequestError(e.message)) })
-            .catch(next);
+            .then(function (userToken) { return res.send(201, { access_token: userToken.value }) })
+            .catch(models.sequelize.UniqueConstraintError, function (e) { return next(new restify.ConflictError(e.message)) })
+            .catch(models.Sequelize.ValidationError, function (e) { return next(new restify.BadRequestError(e.message)) })
+            .catch(function (e) { return next(new restify.InternalServerError(e.message)) });
     },
     getToken: function (req, res, next) {
         models.sequelize.transaction(function (t) {
@@ -33,15 +34,32 @@ module.exports = {
                 return userToken.setUser(req.user, { transaction: t }).return(userToken);
             });
         })
-            .then(function (userToken) { return res.send(req.user.created ? 201 : 200, userToken.get()) })
-            .catch(models.Sequelize.ValidationError, function (e) { return next(restify.BadRequestError(e.message)) })
+            .then(function (userToken) { return res.send(req.user.created ? 201 : 200, { access_token: userToken.value }) })
+            .catch(models.Sequelize.ValidationError, function (e) { return next(new restify.BadRequestError(e.message)) })
             .catch(next);
     },
     getMe: function (req, res) { res.send(req.user.get()) },
     putMe: function (req, res, next) {
-        req.user.update(req.params, {fields: [ 'email', 'type', 'firstName', 'lastName', 'gender', 'username' ]})
-            .then(function () { return res.end() })
-            .catch(models.Sequelize.ValidationError, function (e) { return next(restify.BadRequestError(e.message)) })
+        req.user.getEmailAuth().then(function (emailAuth) {
+            return models.sequelize.transaction(function (t) {
+                if (emailAuth) {
+                    return models.Sequelize.Promise.join(
+                        emailAuth.update(req.params, { fields: ['email', 'password'], transaction: t }),
+                        req.user.update(req.params, {
+                                fields: [ 'email', 'type', 'firstName', 'lastName', 'gender', 'username' ],
+                                transaction: t
+                            }
+                        )
+                    )
+                } else return req.user.update(req.params, {
+                        fields: [ 'email', 'type', 'firstName', 'lastName', 'gender', 'username' ],
+                        transaction: t
+                    }
+                )
+            });
+        })
+            .then(function () { return res.send(200) })
+            .catch(models.Sequelize.ValidationError, function (e) { return next(new restify.BadRequestError(e.message)) })
             .catch(next);
     },
     deleteMe: function (req, res, next) {
