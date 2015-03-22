@@ -2,44 +2,61 @@
  * Created by Jordan on 2/20/2015.
  */
 
-var passport                = require('passport'),
-    FacebookTokenStrategy   = require('passport-facebook-token').Strategy,
+var FacebookTokenStrategy   = require('passport-facebook-token').Strategy,
     BearerTokenStrategy     = require('passport-http-bearer').Strategy,
     HttpStrategy            = require('passport-http').BasicStrategy,
-    models                  = require('../models'),
-    parameters              = require('../parameters');
+    passport                = require('passport'),
+    restify                 = require('restify'),
+    parameters              = require('../parameters'),
+    models                  = require('../models');
 
 passport.use("facebook-token-strategy", new FacebookTokenStrategy({
         clientID: parameters.facebook.appId,
         clientSecret: parameters.facebook.appSecret
     },
     function (accessToken, refreshToken, profile, done) {
-        console.log(profile);
-        models.FacebookAuth.findOrCreate({
-            where: {facebookId: profile.id},
-            defaults: {
-                email: profile.emails[0].value,
-                givenName: profile.givenName,
-                familyName: profile.familyName,
-                middleName: profile.middleName,
-                displayName: profile.displayName
-            }
-        }).spread(function (facebookAuth, created) {
-            if (!created) return facebookAuth.getUser();
-            return models.User.create({
-                email: facebookAuth.email,
-                lastName: facebookAuth.familyName,
-                username: facebookAuth.displayName,
-                firstName: facebookAuth.givenName
-            }).then(function (user) {
-                return facebookAuth.setUser(user)
-                    .then(function () {
-                        user.created = true;
-                        return user;
-                    });
-            });
+        if (!profile || !profile.emails || !profile.emails[0] || !profile.emails[0].value)
+            return done(null, false, { message: "Insufficient permissions, email needed." });
+        models.sequelize.transaction(function (t) {
+            return models.FacebookAuth.find({ where: { facebookId: profile.id } })
+                .then(function (facebookAuth) {
+                    if (facebookAuth)
+                        return facebookAuth.update({
+                            facebookId: profile.id,
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                            email: profile.emails[0].value,
+                            givenName: profile.givenName,
+                            familyName: profile.familyName,
+                            middleName: profile.middleName,
+                            displayName: profile.displayName
+                        }, { transaction: t }).call('getUser');
+                    return models.Sequelize.Promise.join(
+                        models.User.create({
+                            email: profile.emails[0].value,
+                            lastName: profile.familyName,
+                            username: profile.displayName,
+                            firstName: profile.givenName
+                        }, { transaction: t }),
+                        models.FacebookAuth.create({
+                            facebookId: profile.id,
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                            email: profile.emails[0].value,
+                            givenName: profile.givenName,
+                            familyName: profile.familyName,
+                            middleName: profile.middleName,
+                            displayName: profile.displayName
+                        }, { transaction: t }),
+                        function (user, facebookAuth) {
+                            user.created = true;
+                            return facebookAuth.setUser(user, { transaction: t }).return(user);
+                        }
+                    );
+                });
         }).then(function (user) {
-            if (!user) throw new Error("Can't get a user account linked to this facebook account");
+            if (!user) return done(
+                new restify.errors.InternalServerError("Can't get a user account linked to this facebook account."));
             done(null, user);
         }).catch(done);
     }
@@ -76,3 +93,5 @@ passport.use("http-strategy", new HttpStrategy(
         }).catch(done);
     }
 ));
+
+module.exports = function (server) { server.use(passport.initialize()) };

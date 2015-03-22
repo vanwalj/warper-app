@@ -2,54 +2,48 @@
  * Created by Jordan on 2/20/2015.
  */
 
-var express             = require('express'),
+var restify             = require('restify'),
     models              = require('../models'),
+    userController      = require('../controllers/user'),
     securityController  = require('../controllers/security'),
-    userController      = require('../controllers/user');
+    utilsController     = require('../controllers/utils');
 
-module.exports = function(app) {
-    var router = express.Router();
+module.exports = function(server) {
 
-    // Routes params
-    router.param('userId', function (req, res, next, userId) {
-        models.User.find(userId)
-            .then(function (user) {
-                if (!user) return res.shortResponses.notFound();
-                req.qUser = user;
-                next();
-            });
-    });
+    server.get({ path: '/user' },
+        securityController.bearerAuth,
+        userController.getMe
+    );
 
-    router.param('userName', function (req, res, next, userName) {
-        req.username = userName;
-        next();
-    });
+    server.post({ path: '/user' },
+        utilsController.parseBody,
+        userController.register
+    );
 
-    // Routes
-    router.route('/register')
-        .post(userController.register);
+    server.put({ path: '/user' },
+        securityController.bearerAuth,
+        utilsController.parseBody,
+        userController.putMe
+    );
 
-    router.route('/token/bearer')
-        .get(securityController.httpAuth, userController.getToken);
+    server.del({ path: '/user' },
+        securityController.bearerAuth,
+        userController.deleteMe
+    );
 
-    router.route('/token/facebook')
-        .post(securityController.facebookTokenAuth, userController.getToken);
+    server.get({ path: '/user/token/email' },
+        securityController.httpAuth,
+        userController.getToken
+    );
 
-    router.route('/me')
-        .get(securityController.bearerAuth, userController.getMe)
-        .delete(securityController.bearerAuth, userController.deleteMe)
-        .put(securityController.bearerAuth, userController.putMe);
+    server.post({ path: '/user/token/facebook' },
+        utilsController.parseBody,
+        securityController.facebookTokenAuth,
+        userController.getToken
+    );
 
-    router.route('/:userName')
-        .get(securityController.bearerAuth, userController.getUserByUsername);
+    server.get({ path: '/user/:userName/is-valid' },
+        userController.isAValidUsername
+    );
 
-    router.route('/:userName/isvalid')
-        .get(userController.isAValidUsername);
-
-    router.route('/friend')
-        .get(securityController.bearerAuth)
-        .post(securityController.bearerAuth)
-        .delete(securityController.bearerAuth);
-
-    app.use('/user', router);
 };

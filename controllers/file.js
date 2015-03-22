@@ -2,8 +2,8 @@
  * Created by Jordan on 2/21/2015.
  */
 
-var bodyParser  = require('body-parser'),
-    winston     = require('winston'),
+var winston     = require('winston'),
+    restify     = require('restify'),
     sharing     = require('../helpers/sharing'),
     parameters  = require('../parameters'),
     models      = require('../models');
@@ -45,53 +45,41 @@ module.exports = {
      */
 
 
-    getAwsUrl: [
-        bodyParser.json(),
-        function (req, res, next) {
-            if (!req.body.contentType || !req.body.contentLength || !req.body.friends) return res.shortResponses.badRequest();
-            //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
-            models.File.create({
-                contentType: req.body.contentType,
-                contentLength: req.body.contentLength
-            }).then(function (file) {
-                    s3.getSignedUrl('putObject', {
-                        Bucket: parameters.aws.s3Bucket,
-                        Key: file.id,
-                        ContentType: req.body.contentType,
-                        ContentLength: req.body.contentLength,
-                        Expires: 60
-                    }, function (err, url) {
-                        if (err) throw err;
-                        return res.shortResponses.created({ url: url });
-                    });
-                }).catch(next);
+    getAwsUrl: function (req, res, next) {
+        if (!req.body.contentType || !req.body.contentLength || !req.body.friends) return res.shortResponses.badRequest();
+        //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
+        models.File.create({
+            contentType: req.body.contentType,
+            contentLength: req.body.contentLength
+        }).then(function (file) {
+                s3.getSignedUrl('putObject', {
+                    Bucket: parameters.aws.s3Bucket,
+                    Key: file.id,
+                    ContentType: req.body.contentType,
+                    ContentLength: req.body.contentLength,
+                    Expires: 60
+                }, function (err, url) {
+                    if (err) throw err;
+                    return res.send(201, { url: url });
+                });
+            }).catch(next);
 
 
-        }
-    ],
-    snsNotification: [
-        bodyParser.text(),
-        function (req, res) {
-            var objectKey;
-            try {
-                objectKey = JSON.parse(req.body.Message).Records[0].s3.object.key;
-                winston.log('info', 'Receive a notification from SNS for object.', objectKey);
-                models.File.find(objectKey)
-                    .then(function (file) {
-                        if (!file) return res.shortResponses.notFound();
-                        file.snsValid = true;
-                        file.save().then(function (file) {
-                            res.shortResponses.ok();
-                            sharing.shareFile(file);
-                        });
-                    }).catch(function () {
-                        winston.error(e);
-                        return res.shortResponses.badRequest();
+    }
+    ,
+    snsNotification: function (req, res, next) {
+        var objectKey;
+        try {
+            objectKey = JSON.parse(req.body.Message).Records[0].s3.object.key;
+            models.File.find(objectKey)
+                .then(function (file) {
+                    if (!file) return next(new restify.NotFoundError());
+                    file.snsValid = true;
+                    file.save().then(function (file) {
+                        res.end();
+                        sharing.shareFile(file);
                     });
-            } catch (err) {
-                winston.error(e);
-                return res.shortResponses.badRequest();
-            }
-        }
-    ]
+                }).catch(function (e) { return next(new restify.BadRequestError(e.message)) });
+        } catch (err) { return next(new restify.BadRequestError(err.message)) }
+    }
 };

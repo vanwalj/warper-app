@@ -2,16 +2,11 @@
  * Created by Jordan on 2/22/2015.
  */
 
-var express         = require('express'),
+var restify         = require('restify'),
     fileController  = require('../controllers/file');
 
-module.exports = function (app) {
+module.exports = function (server) {
 
-    var router = express.Router();
-
-    router.route('/sns')
-        .post(fileController.snsNotification);
-
-    app.use('/file', router);
+    server.post('/file/sns', fileController.snsNotification);
 
 };

@@ -4,14 +4,14 @@
 
 var fs  = require('fs');
 
-module.exports = function (app) {
+module.exports = function (server) {
 
     fs
         .readdirSync(__dirname)
         .filter(function (fileName) {
             return fileName !== "index.js";
         }).forEach(function (fileName) {
-            require('./' + fileName)(app);
+            require('./' + fileName)(server);
         });
 
 };

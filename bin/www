@@ -4,13 +4,13 @@
  * Created by Jordan on 2/20/2015.
  */
 
-var parameters  = require('../parameters'),
+var winston     = require('winston'),
+    parameters  = require('../parameters'),
     models      = require('../models'),
-    winston     = require('winston'),
-    app         = require('../index');
+    server      = require('../index');
 
 models.sequelize.sync({ force: true }).then(function () {
-    app.listen(parameters.server.port, function () {
+    server.listen(parameters.server.port, function () {
         winston.log('Server listening on', parameters.server.port);
     });
 });

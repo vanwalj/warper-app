@@ -3,6 +3,9 @@
  */
 "use strict";
 
+var hat = require('hat'),
+    userTokenRack = hat.rack(256, 36);
+
 module.exports = function (sequelize, DataTypes) {
     var UserToken = sequelize.define("UserToken", {
         value: DataTypes.STRING
@@ -13,6 +16,12 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         instanceMethods: {},
+        hooks: {
+            beforeValidate: function (userToken) {
+                if (userToken.isNewRecord) userToken.setDataValue('value', userTokenRack());
+                sequelize.Promise.resolve(userToken);
+            }
+        },
         paranoid: true
     });
 

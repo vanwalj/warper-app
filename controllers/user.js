@@ -3,82 +3,56 @@
  */
 "use strict";
 
-var bodyParser  = require('body-parser'),
-    models      = require('../models'),
+var restify     = require('restify'),
     hat         = require('hat'),
-    rack        = hat.rack(256, 36);
+    models      = require('../models');
 
 module.exports = {
-    register: [
-        bodyParser.json(),
-        function (req, res, next) {
-            if (!req.body.email || !req.body.password)
-                return res.shortResponses.badRequest();
-            models.User.create({
-                email: req.body.email,
-                password: req.body.password
-            }).then(function () {
-                res.shortResponses.created();
-            }).catch(next)
-        }
-    ],
-    getToken: [
-        function (req, res, next) {
-            models.UserToken.create({
-                value: rack()
-            })
-                .then(function (userToken) {
-                    userToken.setUser(req.user)
-                        .then(function () {
-                            if (req.user.created)
-                                return res.shortResponses.created({access_token: userToken.value});
-                            res.shortResponses.success({access_token: userToken.value});
-                        });
-                }).catch(next);
-        }
-    ],
-    getMe: [
-        function (req, res) {
-            res.shortResponses.success(req.user.values);
-        }
-    ],
-    getUserByUsername: [
-        function (req, res) {
-            var user = {
-                id: req.qUser.id,
-                username: req.qUser.username
-            };
+    register: function (req, res, next) {
+        models.sequelize.transaction(function (t) {
+            return models.Sequelize.Promise.join(
+                models.User.create(req.body, { fields: ['email'], transaction: t }),
+                models.EmailAuth.create(req.body, { fields: ['password'], transaction: t }),
+                models.UserToken.create({}, { transaction: t }),
+                function (user, emailAuth, userToken) {
+                    return models.Sequelize.Promise.join(
+                        user.setEmailAuth(emailAuth, { transaction: t }),
+                        userToken.setUser(user, { transaction: t }),
+                        function () { return userToken; }
+                    );
+                }
+            )
+        })
+            .then(function (userToken) { return req.send(userToken.get()) })
+            .catch(models.Sequelize.ValidationError, function (e) { return next(restify.BadRequestError(e.message)) })
+            .catch(next);
+    },
+    getToken: function (req, res, next) {
+        models.sequelize.transaction(function (t) {
+            return models.UserToken.create({}, { transaction: t }).then(function (userToken) {
+                return userToken.setUser(req.user, { transaction: t }).return(userToken);
+            });
+        })
+            .then(function (userToken) { return res.send(req.user.created ? 201 : 200, userToken.get()) })
+            .catch(models.Sequelize.ValidationError, function (e) { return next(restify.BadRequestError(e.message)) })
+            .catch(next);
+    },
+    getMe: function (req, res) { res.send(req.user.get()) },
+    putMe: function (req, res, next) {
+        req.user.update(req.body, {fields: [ 'email', 'type', 'firstName', 'lastName', 'gender', 'username' ]})
+            .then(function () { return res.end() })
+            .catch(models.Sequelize.ValidationError, function (e) { return next(restify.BadRequestError(e.message)) })
+            .catch(next);
+    },
+    deleteMe: function (req, res, next) {
+        req.user.destroy()
+            .then(function () { return res.end() })
+            .catch(next);
+    },
+    isAValidUsername: function (req, res, next) {
+        models.User.findOne({ where: { username: req.params.username } })
+            .then(function (user) { return res.send({ result: !user }) })
+            .catch(next);
 
-            res.shortResponses.success(user);
-        }
-    ],
-    putMe: [
-        bodyParser.json(),
-        function (req, res, next) {
-            req.user.update(req.body, {fields: [
-                'email', 'type', 'firstName', 'lastName', 'gender', 'username'
-            ]}).then(function () {
-                res.shortResponses.success();
-            }).catch(next);
-        }
-    ],
-    deleteMe: [
-        function (req, res, next) {
-            req.user.destroy()
-                .then(res.shortResponses.success)
-                .catch(next);
-        }
-    ],
-    isAValidUsername: [
-        function (req, res, next) {
-            models.User.findOne({ where: { username: req.username } })
-                .then(function (user) {
-                    if (user) return res.shortResponses.success({ result: false });
-                    res.shortResponses.success({ result: true });
-                }).catch(function (err) {
-                    next(err);
-                });
-
-        }
-    ]
+    }
 };

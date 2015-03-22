@@ -2,24 +2,18 @@
  * Created by Jordan on 2/20/2015.
  */
 
-var express     = require('express'),
+var restify     = require('restify'),
     winston     = require('winston'),
     passport    = require('passport'),
-    app         = express();
+    server      = restify.createServer({
+        name: "Warper !",
+        version: "1.0.0"
+    });
 
-app.use(passport.initialize());
 
-require('./configurations/passport');
+require('./configurations/passport')(server);
 require('./configurations/winston');
-app.use(require('./helpers/short-responses'));
-app.use(require('./helpers/error-handling'));
 
-require('./routes')(app);
+require('./routes')(server);
 
-
-app.use(function (req, res, next) {
-    winston.log('silly', "Received", req.headers);
-    next();
-});
-
-module.exports = app;
+module.exports = server;

@@ -3,8 +3,9 @@
  */
 "use strict";
 
-var winston = require('winston'),
-    Slack = require('winston-slack-pls').Slack;
+var Slack = require('winston-slack-pls').Slack,
+    winston = require('winston');
+
 
 winston.setLevels(winston.config.npm.levels);
 
