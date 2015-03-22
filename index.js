@@ -10,6 +10,7 @@ var restify     = require('restify'),
         version: "1.0.0"
     });
 
+server.use(restify.CORS());
 
 require('./configurations/passport')(server);
 require('./configurations/winston');
