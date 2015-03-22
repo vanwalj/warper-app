@@ -46,17 +46,17 @@ module.exports = {
 
 
     getAwsUrl: function (req, res, next) {
-        if (!req.body.contentType || !req.body.contentLength || !req.body.friends) return res.shortResponses.badRequest();
+        if (!req.params.contentType || !req.params.contentLength || !req.params.friends) return res.shortResponses.badRequest();
         //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
         models.File.create({
-            contentType: req.body.contentType,
-            contentLength: req.body.contentLength
+            contentType: req.params.contentType,
+            contentLength: req.params.contentLength
         }).then(function (file) {
                 s3.getSignedUrl('putObject', {
                     Bucket: parameters.aws.s3Bucket,
                     Key: file.id,
-                    ContentType: req.body.contentType,
-                    ContentLength: req.body.contentLength,
+                    ContentType: req.params.contentType,
+                    ContentLength: req.params.contentLength,
                     Expires: 60
                 }, function (err, url) {
                     if (err) throw err;
@@ -70,7 +70,7 @@ module.exports = {
     snsNotification: function (req, res, next) {
         var objectKey;
         try {
-            objectKey = JSON.parse(req.body.Message).Records[0].s3.object.key;
+            objectKey = JSON.parse(req.params.Message).Records[0].s3.object.key;
             models.File.find(objectKey)
                 .then(function (file) {
                     if (!file) return next(new restify.NotFoundError());

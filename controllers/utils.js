@@ -6,9 +6,12 @@ var restify = require('restify');
 
 module.exports =  {
     parseBody: function (req, res, next) {
-        restify.bodyParser()(req, res, function (err) {
+        restify.bodyParser({
+            mapParams: true,
+            overrideParams: false
+        })(req, res, function (err) {
             if (err) return next(err);
-            if (!req.body) req.body = {};
+            if (!req.params) req.params = {};
             next()
         });
     }
