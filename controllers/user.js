@@ -23,7 +23,7 @@ module.exports = {
                 }
             )
         })
-            .then(function (userToken) { return res.send(201, { access_token: userToken.value }) })
+            .then(function (userToken) { res.send(201, { access_token: userToken.value }); return next() })
             .catch(models.sequelize.UniqueConstraintError, function (e) { return next(new restify.ConflictError(e.message)) })
             .catch(models.Sequelize.ValidationError, function (e) { return next(new restify.BadRequestError(e.message)) })
             .catch(function (e) { return next(new restify.InternalServerError(e.message)) });
@@ -34,7 +34,7 @@ module.exports = {
                 return userToken.setUser(req.user, { transaction: t }).return(userToken);
             });
         })
-            .then(function (userToken) { return res.send(req.user.created ? 201 : 200, { access_token: userToken.value }) })
+            .then(function (userToken) { res.send(req.user.created ? 201 : 200, { access_token: userToken.value }); return next() })
             .catch(models.Sequelize.ValidationError, function (e) { return next(new restify.BadRequestError(e.message)) })
             .catch(next);
     },
@@ -58,18 +58,18 @@ module.exports = {
                 )
             });
         })
-            .then(function () { return res.send(200) })
+            .then(function () { res.send(200); return next() })
             .catch(models.Sequelize.ValidationError, function (e) { return next(new restify.BadRequestError(e.message)) })
             .catch(next);
     },
     deleteMe: function (req, res, next) {
         req.user.destroy()
-            .then(function () { return res.end() })
+            .then(function () { res.send(200); return next() })
             .catch(next);
     },
     isAValidUsername: function (req, res, next) {
         models.User.findOne({ where: { username: req.params.username } })
-            .then(function (user) { return res.send({ result: !user }) })
+            .then(function (user) { res.send({ result: !user }); return next() })
             .catch(next);
 
     }
