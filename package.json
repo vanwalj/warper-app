@@ -9,6 +9,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "iojs": "1.6.x"
+  },
   "dependencies": {
     "apns": "^0.1.0",
     "aws-sdk": "^2.1.13",
