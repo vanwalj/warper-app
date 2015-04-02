@@ -23,7 +23,7 @@ module.exports = function (sequelize, DataTypes) {
 
                 User.belongsToMany(User, {
                     as: 'Follower',
-                    through: models.Friends
+                    through: models.Follower
                 });
 
                 User.hasMany(models.Device);

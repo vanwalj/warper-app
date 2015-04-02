@@ -2,11 +2,11 @@
  * Created by Jordan on 2/21/2015.
  */
 
-var winston     = require('winston'),
-    restify     = require('restify'),
-    sharing     = require('../helpers/sharing'),
-    parameters  = require('../parameters'),
-    models      = require('../models');
+var restify     = require('restify');
+
+var sharing     = require('../helpers/sharing');
+var parameters  = require('../parameters');
+var models      = require('../models');
 
 module.exports = {
 

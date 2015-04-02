@@ -24,7 +24,7 @@
     "sequelize": "^2.0.5",
     "underscore": "^1.8.2",
     "winston": "^0.9.0",
-    "winston-slack-pls": "git://github.com/vanwalj/winston-slack-pls"
+    "winston-slack-pls": "latest"
   },
   "devDependencies": {
     "chai": "^2.1.2",
