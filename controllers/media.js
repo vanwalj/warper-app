@@ -70,6 +70,7 @@ module.exports = {
     snsNotification: function (req, res, next) {
         var objectKey;
         try {
+            console.log(req.params);
             objectKey = JSON.parse(req.params.Message).Records[0].s3.object.key;
             models.File.find(objectKey)
                 .then(function (file) {
