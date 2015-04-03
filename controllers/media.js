@@ -4,7 +4,6 @@
 
 var restify     = require('restify');
 
-var sharing     = require('../helpers/sharing');
 var parameters  = require('../parameters');
 var models      = require('../models');
 
@@ -46,41 +45,40 @@ module.exports = {
 
 
     getAwsUrl: function (req, res, next) {
-        if (!req.params.contentType || !req.params.contentLength || !req.params.friends) return res.shortResponses.badRequest();
-        //if (contentLength > parameters.fileUpload.maxSize) return res.shortResponses.badRequest();
-        models.File.create({
-            contentType: req.params.contentType,
-            contentLength: req.params.contentLength
-        }).then(function (file) {
-                s3.getSignedUrl('putObject', {
-                    Bucket: parameters.aws.s3Bucket,
-                    Key: file.id,
-                    ContentType: req.params.contentType,
-                    ContentLength: req.params.contentLength,
-                    Expires: 60
-                }, function (err, url) {
-                    if (err) throw err;
-                    return res.send(201, { url: url });
-                });
-            }).catch(next);
-
-
+        models.sequelize.transaction(function (t) {
+            return models.Media.create({
+                contentType: req.params.contentType,
+                contentLength: req.params.contentLength
+            }, { transaction: t })
+                .then(function (media) {
+                    return new models.Sequelize.Promise(function (resolve, reject) {
+                        s3.getSignedUrl('putObject', {
+                            Bucket: parameters.aws.s3Bucket,
+                            Key: media.uuid,
+                            ContentType: req.params.contentType,
+                            ContentLength: req.params.contentLength,
+                            Expires: 60
+                        }, function (err, url) {
+                            if (err) return reject(err);
+                            return resolve(url);
+                        });
+                    });
+                })
+        })
+            .then(function (url) {
+                return res.send(201, { url: url });
+            })
+            .catch(models.Sequelize.Errors.ValidationError, function (err) {
+                return next(new restify.errors.BadRequestError(err.message));
+            })
+            .catch(next);
     }
     ,
     snsNotification: function (req, res, next) {
-        var objectKey;
         try {
+            req.params = JSON.parse(req.body);
             console.log(req.params);
-            objectKey = JSON.parse(req.params.Message).Records[0].s3.object.key;
-            models.File.find(objectKey)
-                .then(function (file) {
-                    if (!file) return next(new restify.NotFoundError());
-                    file.snsValid = true;
-                    file.save().then(function (file) {
-                        res.end();
-                        sharing.shareFile(file);
-                    });
-                }).catch(function (e) { return next(new restify.BadRequestError(e.message)) });
+            res.send(200);
         } catch (err) { return next(new restify.BadRequestError(err.message)) }
     }
 };

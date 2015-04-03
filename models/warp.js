@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
                 Warp.belongsTo(Warp, { as: "Next" });
                 Warp.belongsTo(models.User, { as: "Sender" });
                 Warp.belongsTo(models.User, { as: "Receiver" });
-                Warp.belongsTo(models.File);
+                Warp.belongsTo(models.Media);
             }
         },
         paranoid: true
