@@ -1,18 +1,19 @@
 /**
  * Created by Jordan on 2/20/2015.
  */
+'use strict';
 
-var FacebookTokenStrategy   = require('passport-facebook-token').Strategy,
-    BearerTokenStrategy     = require('passport-http-bearer').Strategy,
-    HttpStrategy            = require('passport-http').BasicStrategy,
-    passport                = require('passport'),
-    restify                 = require('restify'),
-    parameters              = require('../parameters'),
-    models                  = require('../models');
+var FacebookTokenStrategy   = require('passport-facebook-token').Strategy;
+var BearerTokenStrategy     = require('passport-http-bearer').Strategy;
+var HttpStrategy            = require('passport-http').BasicStrategy;
+var passport                = require('passport');
+var restify                 = require('restify');
+
+var models  = require('../models');
 
 passport.use("facebook-token-strategy", new FacebookTokenStrategy({
-        clientID: parameters.facebook.appId,
-        clientSecret: parameters.facebook.appSecret
+        clientID: process.env.FB_APP_ID,
+        clientSecret: process.env.FB_APP_SECRET
     },
     function (accessToken, refreshToken, profile, done) {
         if (!profile || !profile.emails || !profile.emails[0] || !profile.emails[0].value)
@@ -50,7 +51,8 @@ passport.use("facebook-token-strategy", new FacebookTokenStrategy({
                 });
         }).then(function (user) {
             if (!user) return done(
-                new restify.errors.InternalServerError("Can't get a user account linked to this facebook account."));
+                new restify.errors.InternalServerError("Can't get a user account linked to this facebook account.")
+            );
             done(null, user);
         }).catch(done);
     }

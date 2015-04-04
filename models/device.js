@@ -1,6 +1,7 @@
 /**
  * Created by Jordan on 2/22/2015.
  */
+'use strict';
 
 module.exports = function (sequelize, DataTypes) {
     var Device = sequelize.define('Device', {

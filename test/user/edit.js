@@ -22,8 +22,9 @@ module.exports = function (option) {
             hippie(app)
                 .put('/user')
                 .json()
-                .end(function (err, res) {
-                    expect(res.statusCode).to.equal(403);
+                .expectStatus(403)
+                .end(function (err) {
+                    if (err) throw err;
                     done();
                 });
         });
@@ -32,8 +33,9 @@ module.exports = function (option) {
             hippie(app)
                 .header('Authorization', 'Bearer bearer_value')
                 .put('/user')
-                .end(function (err, res) {
-                    expect(res.statusCode).to.equal(403);
+                .expectStatus(403)
+                .end(function (err) {
+                    if (err) throw err;
                     done();
                 });
         });
@@ -92,8 +94,9 @@ module.exports = function (option) {
                                 .put('/user')
                                 .json()
                                 .send(editInfo)
-                                .end(function (err, res) {
-                                    expect(res.statusCode).to.equal(200);
+                                .expectStatus(200)
+                                .end(function (err) {
+                                    if (err) throw err;
                                     user.reload().then(function (user){
                                         expect(user.email).to.equal(editInfo.email);
                                         done();

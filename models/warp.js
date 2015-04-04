@@ -1,17 +1,12 @@
 /**
  * Created by Jordan on 22/02/15.
  */
-"use strict";
+'use strict';
 
 module.exports = function (sequelize, DataTypes) {
     var Warp = sequelize.define('Warp', {
-        latitude: DataTypes.FLOAT,
-        longitude: DataTypes.FLOAT,
-        distance: DataTypes.BIGINT.UNSIGNED,
-        transmit: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        }
+        latitude: { type: DataTypes.FLOAT, allowNull: false },
+        longitude: { type: DataTypes.FLOAT, allowNull: false }
     }, {
         classMethods: {
             associate: function (models) {

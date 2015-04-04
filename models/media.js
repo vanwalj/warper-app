@@ -1,7 +1,7 @@
 /**
  * Created by Jordan on 2/21/2015.
  */
-"use strict";
+'use strict';
 
 module.exports = function (sequelize, DataTypes) {
     var Media = sequelize.define('Media', {
@@ -12,10 +12,9 @@ module.exports = function (sequelize, DataTypes) {
         },
         contentType: { type: DataTypes.STRING, allowNull: false },
         contentLength: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
-        snsValid: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        }
+        latitude: { type: DataTypes.FLOAT, allowNull: false },
+        longitude: { type: DataTypes.FLOAT, allowNull: false },
+        isValid: { type: DataTypes.BOOLEAN, defaultValue: false }
     }, {
         classMethods: {
             associate: function (models) {

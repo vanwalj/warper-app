@@ -1,17 +1,16 @@
 /**
  * Created by Jordan on 2/20/2015.
  */
+'use strict';
 
-var restify             = require('restify'),
-    models              = require('../models'),
-    userController      = require('../controllers/user'),
-    securityController  = require('../controllers/security');
+var userController      = require('../controllers/user');
+var securityController  = require('../controllers/security');
 
 module.exports = function(server) {
 
     server.get({ path: '/user', name: 'Get account' },
         securityController.bearerAuth,
-        userController.getMe
+        userController.getSelf
     );
 
     server.post({ path: '/user', name: 'Register' },
@@ -20,12 +19,12 @@ module.exports = function(server) {
 
     server.put({ path: '/user', name: 'Update account' },
         securityController.bearerAuth,
-        userController.putMe
+        userController.putSelf
     );
 
     server.del({ path: '/user', name: 'Delete account' },
         securityController.bearerAuth,
-        userController.deleteMe
+        userController.deleteSelf
     );
 
     server.post({ path: '/user/token/email', name: 'Request bearer token with email' },

@@ -3,8 +3,8 @@
  */
 'use strict';
 
-var securityController = require('../controllers/security');
-var followController = require('../controllers/follow');
+var securityController  = require('../controllers/security');
+var followController    = require('../controllers/follow');
 
 module.exports = function (server) {
 
@@ -13,7 +13,11 @@ module.exports = function (server) {
         followController.follow
     );
 
-    //server.post('/user/unfollow');
+    server.post('/user/unfollow',
+        securityController.bearerAuth,
+        followController.unfollow
+    );
+
     //
     //server.get('/user/followers');
     //server.get('/user/following');

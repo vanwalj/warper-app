@@ -2,8 +2,7 @@
  * Created by Jordan on 2/25/2015.
  */
 
-var hippie  = require('hippie'),
-    expect  = require('chai').expect;
+var hippie  = require('hippie');
 
 module.exports = function (option) {
 
@@ -22,8 +21,9 @@ module.exports = function (option) {
             hippie(app)
                 .get('/user')
                 .json()
-                .end(function (err, res) {
-                    expect(res.statusCode).to.equal(403);
+                .expectStatus(403)
+                .end(function (err) {
+                    if (err) throw err;
                     done();
                 });
         });
@@ -32,14 +32,15 @@ module.exports = function (option) {
             hippie(app)
                 .header('Authorization', 'Bearer bearer_value')
                 .get('/user')
-                .end(function (err, res) {
-                    expect(res.statusCode).to.equal(403);
+                .expectStatus(403)
+                .end(function (err) {
+                    if (err) throw err;
                     done();
                 });
         });
 
         it('should return the user account', function (done) {
-            models.User.create({ email: 'user@mail.com', gender: 'male' })
+            models.User.create({ email: 'user@mail.com', gender: 'male', firstName: 'Jean', lastName: 'YOLO', username: 'username' })
                 .then(function (user) {
                     models.Sequelize.Promise.join(
                         models.EmailAuth.create({ email: 'user@mail.com', password: 'password' }),
@@ -58,8 +59,9 @@ module.exports = function (option) {
                                         .expectValue('firstName', user.firstName)
                                         .expectValue('lastName', user.lastName)
                                         .expectValue('username', user.username)
-                                        .end(function (err, res) {
-                                            expect(res.statusCode).to.equal(200);
+                                        .expectStatus(200)
+                                        .end(function (err) {
+                                            if (err) throw err;
                                             done();
                                         });
                                 }

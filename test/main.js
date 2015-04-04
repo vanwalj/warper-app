@@ -16,4 +16,5 @@ before(function (done) {
 var options = { app: app, models: models };
 
 //require('./user')(options);
-require('./follow')(options);
+//require('./follow')(options);
+require('./warp')(options);

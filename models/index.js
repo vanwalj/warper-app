@@ -1,15 +1,15 @@
 /**
  * Created by Jordan on 2/20/2015.
  */
-"use strict";
+'use strict';
 
-var fs          = require('fs'),
-    path        = require('path'),
-    winston     = require('winston'),
-    parameters  = require('../parameters'),
-    Sequelize   = require('sequelize'),
-    sequelize   = new Sequelize(parameters.db.uri, { logging: process.env.NODE_ENV === "test" ? undefined : winston.info }),
-    db          = {};
+var fs          = require('fs');
+var path        = require('path');
+var winston     = require('winston');
+var Sequelize   = require('sequelize');
+
+var sequelize   = new Sequelize(process.env.DB_URI || process.env.CLEARDB_DATABASE_URL, { logging: process.env.NODE_ENV === "test" ? undefined : winston.info });
+var db          = {};
 
 fs
     .readdirSync(__dirname)
