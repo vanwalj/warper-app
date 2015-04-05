@@ -37,6 +37,7 @@ server.on('after', function (req, res, route, error) {
         error: error });
 });
 
+restify.CORS.ALLOW_HEADERS.push('Authorization');
 server.use(restify.CORS());
 
 server.use(restify.bodyParser({
