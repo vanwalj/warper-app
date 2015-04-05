@@ -44,4 +44,6 @@ server.use(restify.bodyParser({
     overrideParams: false
 }));
 
+server.use(restify.queryParser());
+
 module.exports = server;

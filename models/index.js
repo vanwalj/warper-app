@@ -8,7 +8,7 @@ var path        = require('path');
 var winston     = require('winston');
 var Sequelize   = require('sequelize');
 
-var sequelize   = new Sequelize(process.env.DB_URI || process.env.CLEARDB_DATABASE_URL, { logging: process.env.NODE_ENV === "test" ? undefined : winston.info });
+var sequelize   = new Sequelize(process.env.DB_URI || process.env.CLEARDB_DATABASE_URL, { logging: process.env.NODE_ENV === "test" ? winston.info : winston.info });
 var db          = {};
 
 fs

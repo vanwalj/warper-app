@@ -20,8 +20,8 @@ followController.follow = function (req, res, next) {
             if (!follower) throw new restify.errors.BadRequestError('User is already followed.');
             return req.user.hasFollower(follower.UserId);
         })
-        .then(function (followBack) {
-            res.send(200, { followBack: followBack });
+        .then(function (friends) {
+            res.send({ isFriend: friends });
             return next();
         })
         .catch(next);
@@ -39,6 +39,33 @@ followController.unfollow = function (req, res, next) {
         })
         .then(function () {
             res.send(204);
+            return next();
+        })
+        .catch(next);
+};
+
+followController.getFollowers = function (req, res, next) {
+    req.user.getFollowers({ attributes: ['id', 'username'] })
+        .then(function (followers) {
+            res.send({ followers: followers });
+            return next();
+        })
+        .catch(next);
+};
+
+followController.getFollowing = function (req, res, next) {
+    models.User.findAll({ attributes: ['id', 'username'], include: [{ model: models.Followers, where: { UserId: req.user.id }, attributes: [] }] })
+        .then(function (users) {
+            res.send({ following: users });
+            return next();
+        })
+        .catch(next);
+};
+
+followController.getFriends = function (req, res, next) {
+    req.user.getFollowers({ attributes: ['id', 'username'], include: [{ model: models.Followers, where: { UserId: req.user.id }, attributes: [] }] })
+        .then(function (users) {
+            res.send({ friends: users });
             return next();
         })
         .catch(next);

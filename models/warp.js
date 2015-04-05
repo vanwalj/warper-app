@@ -5,16 +5,17 @@
 
 module.exports = function (sequelize, DataTypes) {
     var Warp = sequelize.define('Warp', {
-        latitude: { type: DataTypes.FLOAT, allowNull: false },
-        longitude: { type: DataTypes.FLOAT, allowNull: false }
+        latitude: { type: DataTypes.FLOAT },
+        longitude: { type: DataTypes.FLOAT },
+        dispatched: { type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false },
+        seen: { type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false }
     }, {
         classMethods: {
             associate: function (models) {
-                Warp.belongsTo(Warp, { as: "Previous" });
-                Warp.belongsTo(Warp, { as: "Next" });
-                Warp.belongsTo(models.User, { as: "Sender" });
-                Warp.belongsTo(models.User, { as: "Receiver" });
-                Warp.belongsTo(models.Media);
+                Warp.belongsTo(Warp, { as: "PreviousWarp" });
+                Warp.hasMany(Warp, { as: "NextWarps" });
+                Warp.belongsTo(models.User, { as: "Dest" });
+                Warp.belongsTo(models.Medium);
             }
         },
         paranoid: true

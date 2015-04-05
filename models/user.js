@@ -13,24 +13,19 @@ module.exports = function (sequelize, DataTypes) {
                 isEmail: true
             }
         },
-        firstName: DataTypes.STRING,
-        lastName: DataTypes.STRING,
-        gender: DataTypes.STRING,
         username: { type: DataTypes.STRING }
     }, {
         classMethods: {
             associate: function (models) {
 
                 User.belongsToMany(User, {
-                    as: 'Follower',
+                    as: 'Followers',
                     through: models.Follower
                 });
 
                 User.hasMany(models.Device);
-                User.hasMany(models.Warp, { as: "Sender" });
-                User.hasMany(models.Warp, { as: "Receiver" });
                 User.hasMany(models.UserToken);
-                User.hasMany(models.Media);
+                User.hasMany(models.Medium);
 
                 User.hasOne(models.FacebookAuth);
                 User.hasOne(models.EmailAuth);

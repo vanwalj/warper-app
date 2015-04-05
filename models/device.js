@@ -5,8 +5,9 @@
 
 module.exports = function (sequelize, DataTypes) {
     var Device = sequelize.define('Device', {
-        type: DataTypes.ENUM(['iOS', 'Android']),
-        token: DataTypes.STRING
+        platform: DataTypes.ENUM(['iOS', 'Android']),
+        token: DataTypes.STRING,
+        snsToken: DataTypes.STRING
     }, {
         classMethods: {
             associate: function (models) {
