@@ -12,7 +12,7 @@ var accountController = {};
 accountController.register = function (req, res, next) {
     models.sequelize.transaction(function (transaction) {
         return models.Sequelize.Promise.join(
-            models.User.create(req.params, { fields: ['email'], transaction: transaction }),
+            models.User.create(req.params, { fields: ['email', 'username'], transaction: transaction }),
             models.EmailAuth.create(req.params, { fields: ['email', 'password'], transaction: transaction }),
             models.UserToken.create({}, { transaction: transaction }),
             function (user, emailAuth, userToken) {

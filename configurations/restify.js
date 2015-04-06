@@ -40,6 +40,11 @@ server.on('after', function (req, res, route, error) {
 restify.CORS.ALLOW_HEADERS.push('Authorization');
 server.use(restify.CORS());
 
+server.opts(/\.*/, function (req, res, next) {
+    res.send(200);
+    next();
+});
+
 server.use(restify.bodyParser({
     mapParams: true,
     overrideParams: false
