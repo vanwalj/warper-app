@@ -37,8 +37,11 @@ server.on('after', function (req, res, route, error) {
         error: error });
 });
 
-server.use(cors());
-//server.use(restify.CORS());
+restify.CORS.ALLOW_HEADERS.push('Accept-Encoding');
+restify.CORS.ALLOW_HEADERS.push('Accept-Language');
+restify.CORS.ALLOW_HEADERS.push('authorization');
+//server.use(cors());
+server.use(restify.CORS());
 
 
 server.use(restify.bodyParser({
