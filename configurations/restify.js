@@ -5,7 +5,7 @@
 
 var restify = require('restify');
 var winston = require('winston');
-
+var cors    = require('cors');
 var server = restify.createServer({
     name: "Warper !",
     version: "1.0.0"
@@ -37,7 +37,8 @@ server.on('after', function (req, res, route, error) {
         error: error });
 });
 
-server.use(restify.CORS());
+server.use(cors());
+//server.use(restify.CORS());
 
 
 server.use(restify.bodyParser({
