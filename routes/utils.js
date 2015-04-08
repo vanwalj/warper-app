@@ -3,6 +3,8 @@
  */
 'use strict';
 
+var models = require('../models');
+
 module.exports = function (server) {
     if (process.env.NODE_ENV == "debug") {
         server.get('/utils/drop',
