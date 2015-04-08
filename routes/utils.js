@@ -3,7 +3,7 @@
  */
 'use strict';
 
-modules.exports = function (server) {
+module.exports = function (server) {
     if (process.env.NODE_ENV == "debug") {
         server.get('/utils/drop',
             function (req, res, next) {
