@@ -58,8 +58,6 @@ accountController.putSelf = function (req, res, next) {
     req.user.getEmailAuth().then(function (emailAuth) {
         return models.sequelize.transaction(function (transaction) {
             if (emailAuth) {
-                console.log(req.user.email);
-                console.log(req.params);
                 return models.Sequelize.Promise.join(
                     req.user.update(req.params, {
                         fields: ['email', 'username'],

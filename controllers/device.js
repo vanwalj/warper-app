@@ -10,7 +10,7 @@ var models = require('../models');
 var deviceController = {};
 
 deviceController.postDevice = function (req, res, next) {
-    models.Device.create(_.extend({}, req.params, { UserId: req.user.id }), { fields: ['platform', 'token'] })
+    models.Device.create(_.extend({}, req.params, { UserId: req.user.id }), { fields: ['platform', 'token', 'UserId'] })
         .then(function (device) {
             res.send(device.get());
             return next();
