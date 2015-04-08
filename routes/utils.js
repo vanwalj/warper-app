@@ -9,7 +9,7 @@ module.exports = function (server) {
     if (process.env.NODE_ENV == "debug") {
         server.get('/utils/drop',
             function (req, res, next) {
-                models.sequelize.sync().then(function () {
+                models.sequelize.sync({force: true}).then(function () {
                     res.send(204);
                     return next();
                 });
