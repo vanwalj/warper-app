@@ -56,6 +56,7 @@ followController.getFollowers = function (req, res, next) {
 followController.getFollowing = function (req, res, next) {
     models.Follow.findAll()
         .then(function (follow) {
+            console.log("FOLLOW", follow);
             res.send({ following: follow });
             return next();
         })
