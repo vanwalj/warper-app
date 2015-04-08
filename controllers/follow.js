@@ -54,7 +54,7 @@ followController.getFollowers = function (req, res, next) {
 };
 
 followController.getFollowing = function (req, res, next) {
-    models.User.findAll({ attributes: ['id', 'username'], include: [{ model: models.Follower, where: { UserId: req.user.id }, attributes: [] }] })
+    models.User.findAll({ attributes: ['id', 'username'], include: [{ model: models.Follower, as: 'Followers', where: { UserId: req.user.id }, attributes: [] }] })
         .then(function (users) {
             res.send({ following: users });
             return next();
@@ -63,7 +63,7 @@ followController.getFollowing = function (req, res, next) {
 };
 
 followController.getFriends = function (req, res, next) {
-    req.user.getFollowers({ attributes: ['id', 'username'], include: [{ model: models.Follower, where: { UserId: req.user.id }, attributes: [] }] })
+    req.user.getFollowers({ attributes: ['id', 'username'], include: [{ model: models.Follower, as: 'Followers', where: { UserId: req.user.id }, attributes: [] }] })
         .then(function (users) {
             res.send({ friends: users });
             return next();
