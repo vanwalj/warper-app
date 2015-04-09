@@ -20,7 +20,7 @@ module.exports = function (option) {
 
         it('should return an error - no credentials', function (done) {
             hippie(app)
-                .post('/user/follow')
+                .post('/follow')
                 .json()
                 .end(function (err, res) {
                     expect(res.statusCode).to.equal(403);
@@ -31,7 +31,7 @@ module.exports = function (option) {
         it('should return an error - bad credentials', function (done) {
             hippie(app)
                 .header('Authorization', 'Bearer bearer_value')
-                .post('/user/follow')
+                .post('/follow')
                 .end(function (err, res) {
                     expect(res.statusCode).to.equal(403);
                     done();
@@ -51,7 +51,7 @@ module.exports = function (option) {
                         function () {
                             hippie(app)
                                 .header('Authorization', 'Bearer ' + userToken1.value)
-                                .post('/user/follow')
+                                .post('/follow')
                                 .json()
                                 .expectStatus(200)
                                 .expectValue('followBack', false)

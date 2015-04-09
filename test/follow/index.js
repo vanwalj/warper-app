@@ -5,7 +5,8 @@
 module.exports = function (options) {
 
     describe('Follow', function () {
-        require('./follow')(options);
+        //require('./follow')(options);
+        require('./getFollowing')(options);
     });
 
 };

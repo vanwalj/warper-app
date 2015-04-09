@@ -9,10 +9,12 @@ var winston = require('winston');
 
 winston.setLevels(winston.config.npm.levels);
 
-winston.add(Slack, {
-    apiToken: process.env.SLACK_API,
-    channel: process.env.SLACK_WINSTON_CHANNEL,
-    level: 'info'
-});
+if (process.env.NODE_ENV != 'test') {
+    winston.add(Slack, {
+        apiToken: process.env.SLACK_API,
+        channel: process.env.SLACK_WINSTON_CHANNEL,
+        level: 'info'
+    });
+}
 
 module.exports = winston;
