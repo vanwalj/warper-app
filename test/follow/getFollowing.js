@@ -52,7 +52,7 @@ module.exports = function (option) {
                     models.Sequelize.Promise.join(
                         user1.addUserToken(userToken1),
                         user2.addUserToken(userToken2),
-                        user1.addFollower(user2),
+                        user2.follow(user1),
                         function () {
                             hippie(app)
                                 .header('Authorization', 'Bearer ' + userToken1.value)

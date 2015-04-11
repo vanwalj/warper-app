@@ -55,7 +55,7 @@ followController.getFollowers = function (req, res, next) {
 
 followController.getFollowing = function (req, res, next) {
     models.User.findAll({
-        include: [{model: models.User, as: 'Followers'}]
+        include: [{model: models.Follow, as: 'Followers'}]
     })
         .then(function (follow) {
             res.send({ following: follow });
