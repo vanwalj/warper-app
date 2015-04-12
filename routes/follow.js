@@ -80,16 +80,16 @@ module.exports = function (server) {
     );
 
     /**
-     * @api {get} /following Get following.
+     * @api {get} /followings Get followings.
      * @apiVersion 1.0.0
-     * @apiName GetFollowing
+     * @apiName GetFollowings
      * @apiGroup Follow
      *
      * @apiUse BearerAuth
      *
-     * @apiSuccess {Object[]}   following           List of following.
-     * @apiSuccess {Number}     following.id        Following id.
-     * @apiSuccess {String}     following.username  Following username.
+     * @apiSuccess {Object[]}   followings           List of following.
+     * @apiSuccess {Number}     followings.id        Following id.
+     * @apiSuccess {String}     followings.username  Following username.
      *
      * @apiSuccessExample Success-Response:
      *      HTTP/1.1 200 OK
@@ -104,9 +104,9 @@ module.exports = function (server) {
      *              ]
      *      }
      */
-    server.get('/following',
+    server.get('/followings',
         securityController.bearerAuth,
-        followController.getFollowing
+        followController.getFollowings
     );
 
     /**

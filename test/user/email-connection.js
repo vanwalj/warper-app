@@ -2,8 +2,7 @@
  * Created by Jordan on 2/25/2015.
  */
 
-var hippie  = require('hippie'),
-    expect  = require('chai').expect;
+var hippie  = require('hippie');
 
 module.exports = function (option) {
 
@@ -20,7 +19,7 @@ module.exports = function (option) {
 
         it('Should return a 403 since no credentials are set.', function (done) {
             hippie(app)
-                .post('/user/token/email')
+                .post('/auth-token/using-email')
                 .expectStatus(403)
                 .end(function (err) {
                     if (err) throw err;
@@ -30,7 +29,7 @@ module.exports = function (option) {
 
         it('Should return a 403 since user does not exist.', function (done) {
             hippie(app)
-                .post('/user/token/email')
+                .post('/auth-token/using-email')
                 .auth('user', 'password')
                 .expectStatus(403)
                 .end(function (err) {
@@ -54,7 +53,7 @@ module.exports = function (option) {
                         })
                         .then(function () {
                             hippie(app)
-                                .post('/user/token/email')
+                                .post('/auth-token/using-email')
                                 .json()
                                 .auth(newUser.email, newUser.password)
                                 .expectStatus(200)

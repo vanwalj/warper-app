@@ -20,7 +20,7 @@ module.exports = function (option) {
 
         it('should fail and return a client error because password and mail are omitted.', function (done) {
             hippie(app)
-                .post('/user')
+                .post('/register')
                 .expectStatus(400)
                 .end(function (err) {
                     if (err) throw err;
@@ -30,7 +30,7 @@ module.exports = function (option) {
 
         it('should fail and return a client error because email is omitted.', function (done) {
             hippie(app)
-                .post('/user')
+                .post('/register')
                 .json()
                 .send({password: "password"})
                 .expectStatus(400)
@@ -42,7 +42,7 @@ module.exports = function (option) {
 
         it('should fail and return a client error because password is omitted.', function (done) {
             hippie(app)
-                .post('/user')
+                .post('/register')
                 .json()
                 .send({email: "email"})
                 .expectStatus(400)
@@ -59,7 +59,7 @@ module.exports = function (option) {
             };
 
             hippie(app)
-                .post('/user')
+                .post('/register')
                 .send(newUser)
                 .json()
                 .expectStatus(400)
@@ -76,14 +76,14 @@ module.exports = function (option) {
             };
 
             hippie(app)
-                .post('/user')
+                .post('/register')
                 .json()
                 .send(newUser)
                 .expectStatus(201)
                 .end(function (err) {
                     if (err) throw err;
                     hippie(app)
-                        .post('/user')
+                        .post('/register')
                         .json()
                         .send(newUser)
                         .expectStatus(409)
@@ -102,7 +102,7 @@ module.exports = function (option) {
 
             hippie(app)
                 .json()
-                .post('/user')
+                .post('/register')
                 .send(newUser)
                 .expectStatus(201)
                 .end(function (err) {

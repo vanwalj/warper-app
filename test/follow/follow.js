@@ -20,7 +20,7 @@ module.exports = function (option) {
 
         it('should return an error - no credentials', function (done) {
             hippie(app)
-                .post('/follow')
+                .post('/follow/1')
                 .json()
                 .end(function (err, res) {
                     expect(res.statusCode).to.equal(403);
@@ -31,7 +31,7 @@ module.exports = function (option) {
         it('should return an error - bad credentials', function (done) {
             hippie(app)
                 .header('Authorization', 'Bearer bearer_value')
-                .post('/follow')
+                .post('/follow/1')
                 .end(function (err, res) {
                     expect(res.statusCode).to.equal(403);
                     done();
@@ -51,20 +51,18 @@ module.exports = function (option) {
                         function () {
                             hippie(app)
                                 .header('Authorization', 'Bearer ' + userToken1.value)
-                                .post('/follow')
+                                .post('/follow/' + user2.id)
                                 .json()
                                 .expectStatus(200)
-                                .expectValue('followBack', false)
-                                .send({ userId: user2.id })
+                                .expectValue('friends', false)
                                 .end(function (err) {
                                     if (err) throw err;
                                     hippie(app)
                                         .header('Authorization', 'Bearer ' + userToken2.value)
-                                        .post('/user/follow')
+                                        .post('/follow/' + user1.id)
                                         .json()
                                         .expectStatus(200)
-                                        .expectValue('followBack', true)
-                                        .send({ userId: user1.id })
+                                        .expectValue('friends', true)
                                         .end(function (err) {
                                             if (err) throw err;
                                             done();

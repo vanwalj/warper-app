@@ -11,7 +11,7 @@ module.exports = function (option) {
     var app = option.app;
     var models = option.models;
 
-    describe('Get following', function () {
+    describe('Get friends', function () {
 
         beforeEach(function (done) {
             this.timeout(10000);
@@ -41,7 +41,6 @@ module.exports = function (option) {
         //});
 
         it('should succeed', function (done) {
-            this.timeout(10000);
             models.Sequelize.Promise.join(
                 models.User.create({ email: 'user1@gmail.com', username: 'User 1' }),
                 models.User.create({ email: 'user2@gmail.com', username: 'User 2' }),
@@ -52,14 +51,15 @@ module.exports = function (option) {
                         user1.addUserToken(userToken1),
                         user2.addUserToken(userToken2),
                         user1.addFollowing(user2),
+                        user1.addFollower(user2),
                         function () {
                             hippie(app)
                                 .header('Authorization', 'Bearer ' + userToken1.value)
-                                .get('/followings')
+                                .get('/friends')
                                 .json()
                                 .expectStatus(200)
-                                .expectValue('followings[0].id', 2)
-                                .expectValue('followings[0].username', 'User 2')
+                                .expectValue('friends[0].id', 2)
+                                .expectValue('friends[0].username', 'User 2')
                                 .end(function (err) {
                                     if (err) throw err;
                                     done()

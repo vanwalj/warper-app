@@ -19,7 +19,7 @@ module.exports = function (option) {
 
         it('should return an error - no credentials', function (done) {
             hippie(app)
-                .get('/user')
+                .get('/account')
                 .json()
                 .expectStatus(403)
                 .end(function (err) {
@@ -31,7 +31,7 @@ module.exports = function (option) {
         it('should return an error - bad credentials', function (done) {
             hippie(app)
                 .header('Authorization', 'Bearer bearer_value')
-                .get('/user')
+                .get('/account')
                 .expectStatus(403)
                 .end(function (err) {
                     if (err) throw err;
@@ -52,7 +52,7 @@ module.exports = function (option) {
                                 function () {
                                     hippie(app)
                                         .header('Authorization', 'Bearer ' + userToken.value)
-                                        .get('/user')
+                                        .get('/account')
                                         .json()
                                         .expectValue('id', user.id)
                                         .expectValue('email', user.email)

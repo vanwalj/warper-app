@@ -18,14 +18,16 @@ module.exports = function (sequelize, DataTypes) {
         classMethods: {
             associate: function (models) {
 
-                User.hasMany(models.Follow, {
+                User.belongsToMany(models.User, {
                     as: 'Followers',
-                    foreignKey: 'FollowerId'
+                    foreignKey: 'FollowerId',
+                    through: models.Follow
                 });
 
-                User.hasMany(models.Follow, {
-                    as: 'Follows',
-                    foreignKey: 'FollowId'
+                User.belongsToMany(models.User, {
+                    as: 'Followings',
+                    foreignKey: 'FollowingId',
+                    through: models.Follow
                 });
 
                 User.hasMany(models.Device);
@@ -36,16 +38,7 @@ module.exports = function (sequelize, DataTypes) {
                 User.hasOne(models.EmailAuth);
             }
         },
-        instanceMethods: {
-            follow: function (userId, options) {
-                options = options || {};
-                return sequelize.models.Follow.create({
-                    FollowerId: this.id,
-                    FollowingId: userId
-                }, { transaction: options.transaction })
-                    .return(this);
-            }
-        },
+        instanceMethods: {},
         paranoid: true
     });
 
